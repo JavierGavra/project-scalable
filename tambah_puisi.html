@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="tambah_puisi.css" />
+    <title>Tulis Puisi — Puisi Nusantara</title>
+</head>
+
+<body>
+    <!-- Header -->
+    <header>
+        <h1><a href="dashboard.html">My Poems</a></h1>
+        <div class="user-info">
+            <button class="btn-logout" onclick="doLogout()">Keluar</button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="main">
+        <div class="nav-bar">
+            <a href="dashboard.html" class="btn-back">← Kembali ke Dashboard</a>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h2>Tulis Puisi Baru</h2>
+                <p>Tuangkan bait-bait karya sastra dan inspirasi Anda di sini.</p>
+            </div>
+
+            <div id="submit-alert" class="alert"></div>
+
+            <div class="form-group">
+                <label for="judul">Judul Puisi</label>
+                <input type="text" id="judul" placeholder="Tulis judul puisi Anda..." autofocus />
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="tgl_submit">Tanggal Submit</label>
+                    <input type="date" id="tgl_submit" />
+                </div>
+                <div class="form-group">
+                    <label for="kategori">Kategori</label>
+                    <select id="kategori">
+                        <option value="">-- Pilih Kategori --</option>
+                        <option value="Alam">Alam</option>
+                        <option value="Cinta">Cinta</option>
+                        <option value="Patriotisme">Patriotisme</option>
+                        <option value="Religi">Religi</option>
+                        <option value="Sosial">Sosial</option>
+                        <option value="Lainnya">Lainnya</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="keyword">Kata Kunci (pisahkan dengan koma)</label>
+                <input type="text" id="keyword" placeholder="contoh: senja, rindu, kenangan" />
+            </div>
+
+            <div class="form-group">
+                <label for="isi">Isi Puisi</label>
+                <textarea id="isi" placeholder="Tuliskan bait puisi Anda di sini..."></textarea>
+            </div>
+
+            <div class="form-actions">
+                <a href="dashboard.html" class="btn-batal">Batal</a>
+                <button class="btn-simpan" id="btn-simpan" onclick="doSubmitPuisi()">
+                    Simpan Puisi
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const BASE = "server.php";
+
+        window.onload = () => {
+            document.getElementById("tgl_submit").value = new Date()
+                .toISOString()
+                .split("T")[0];
+        };
+
+        async function doLogout() {
+            try {
+                await fetch(`${BASE}?action=logout`, {
+                    method: "POST",
+                    credentials: "include",
+                });
+            } finally {
+                window.location.href = "index.html";
+            }
+        }
+
+        async function doSubmitPuisi() {
+            const alertEl = document.getElementById("submit-alert");
+            const judul = document.getElementById("judul").value.trim();
+            const tgl_submit = document.getElementById("tgl_submit").value;
+            const kategori = document.getElementById("kategori").value;
+            const keyword = document.getElementById("keyword").value.trim();
+            const isi = document.getElementById("isi").value.trim();
+
+            if (!judul || !tgl_submit || !kategori || !isi) {
+                return showAlert(
+                    alertEl,
+                    "Judul, tanggal, kategori, dan isi puisi wajib diisi!",
+                    "error"
+                );
+            }
+
+            const btn = document.getElementById("btn-simpan");
+            btn.disabled = true;
+            btn.textContent = "Menyimpan...";
+
+            try {
+                const res = await fetch(`${BASE}?action=submit_puisi`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    credentials: "include",
+                    body: JSON.stringify({
+                        judul: judul,
+                        tgl_submit: tgl_submit,
+                        kategori: kategori,
+                        keywords: keyword,
+                        isi: isi,
+                    }),
+                });
+
+                if (res.status === 401) {
+                    showAlert(alertEl, "Sesi habis, silakan login kembali", "error");
+                    setTimeout(() => {
+                        window.location.href = "index.html";
+                    }, 1200);
+                    return;
+                }
+
+                const data = await res.json();
+
+                if (res.ok) {
+                    showAlert(
+                        alertEl,
+                        (data.message || "Puisi berhasil disimpan!") + " Mengalihkan...",
+                        "success"
+                    );
+                    setTimeout(() => {
+                        window.location.href = "dashboard.html";
+                    }, 1000);
+                } else {
+                    showAlert(alertEl, data.error || "Gagal menyimpan puisi", "error");
+                    btn.disabled = false;
+                    btn.textContent = "Simpan Puisi";
+                }
+            } catch {
+                showAlert(alertEl, "Gagal terhubung ke server", "error");
+                btn.disabled = false;
+                btn.textContent = "Simpan Puisi";
+            }
+        }
+
+        function showAlert(el, msg, type) {
+            el.textContent = msg;
+            el.className = `alert ${type}`;
+            el.style.display = "block";
+        }
+    </script>
+</body>
+
+</html>

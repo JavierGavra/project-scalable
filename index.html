@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="style.css" />
+  <title>Aplikasi Puisi — Login</title>
+</head>
+
+<body>
+  <div class="container">
+    <h1>My Poems</h1>
+    <p class="subtitle">Aplikasi Manajemen Puisi</p>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab active" onclick="switchTab('login')">Masuk</button>
+      <button class="tab" onclick="switchTab('register')">Daftar</button>
+    </div>
+
+    <!-- Alert -->
+    <div id="alert" class="alert"></div>
+
+    <!-- Form Login -->
+    <div id="panel-login" class="panel active">
+      <div class="form-group">
+        <label for="login-username">Username</label>
+        <input type="text" id="login-username" placeholder="Masukkan username" />
+      </div>
+      <div class="form-group">
+        <label for="login-password">Password</label>
+        <input type="password" id="login-password" placeholder="Masukkan password" />
+      </div>
+      <button class="btn" id="btn-login" onclick="doLogin()">Masuk</button>
+    </div>
+
+    <!-- Form Register -->
+    <div id="panel-register" class="panel">
+      <div class="form-group">
+        <label for="reg-nama">Nama Lengkap</label>
+        <input type="text" id="reg-nama" placeholder="Nama lengkap Anda" />
+      </div>
+      <div class="form-group">
+        <label for="reg-noid">No. ID / Identitas</label>
+        <input type="text" id="reg-noid" placeholder="Nomor ID / Identitas" />
+      </div>
+      <div class="form-group">
+        <label for="reg-username">Username</label>
+        <input type="text" id="reg-username" placeholder="Minimal 3 karakter" />
+      </div>
+      <div class="form-group">
+        <label for="reg-password">Password</label>
+        <input type="password" id="reg-password" placeholder="Minimal 6 karakter" />
+      </div>
+      <button class="btn" id="btn-register" onclick="doRegister()">
+        Daftar Sekarang
+      </button>
+    </div>
+  </div>
+
+  <script>
+    const BASE = "server.php";
+
+    function switchTab(tab) {
+      document.querySelectorAll(".tab").forEach((t) => t.classList.remove("active"));
+      document.querySelectorAll(".panel").forEach((p) => p.classList.remove("active"));
+      event.target.classList.add("active");
+      document.getElementById(`panel-${tab}`).classList.add("active");
+      hideAlert();
+    }
+
+    function showAlert(msg, type) {
+      const el = document.getElementById("alert");
+      el.textContent = msg;
+      el.className = `alert ${type}`;
+      el.style.display = "block";
+    }
+
+    function hideAlert() {
+      document.getElementById("alert").style.display = "none";
+    }
+
+    async function doLogin() {
+      const username = document.getElementById("login-username").value.trim();
+      const password = document.getElementById("login-password").value;
+
+      if (!username || !password) {
+        return showAlert("Isi semua field!", "error");
+      }
+
+      const btn = document.getElementById("btn-login");
+      btn.disabled = true;
+      btn.textContent = "Memproses...";
+
+      try {
+        const res = await fetch(`${BASE}?action=login`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({ username, password }),
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+          showAlert(data.message || "Login berhasil!", "success");
+          setTimeout(() => {
+            window.location.href = "dashboard.html";
+          }, 800);
+        } else {
+          showAlert(data.error || "Username atau password salah", "error");
+        }
+      } catch {
+        showAlert("Gagal terhubung ke server", "error");
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "Masuk";
+      }
+    }
+
+    async function doRegister() {
+      const nama = document.getElementById("reg-nama").value.trim();
+      const no_id = document.getElementById("reg-noid").value.trim();
+      const username = document.getElementById("reg-username").value.trim();
+      const password = document.getElementById("reg-password").value;
+
+      if (!nama || !no_id || !username || !password) {
+        return showAlert("Isi semua field!", "error");
+      }
+
+      const btn = document.getElementById("btn-register");
+      btn.disabled = true;
+      btn.textContent = "Mendaftarkan...";
+
+      try {
+        const res = await fetch(`${BASE}?action=register`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({
+            username: username,
+            nama_lengkap: nama,
+            password: password,
+            no_id: no_id,
+          }),
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+          showAlert(data.message || "Registrasi berhasil! Silakan masuk.", "success");
+          setTimeout(() => {
+            document.querySelectorAll(".tab")[0].click();
+          }, 1500);
+        } else {
+          showAlert(data.error || "Registrasi gagal", "error");
+        }
+      } catch {
+        showAlert("Gagal terhubung ke server", "error");
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "Daftar Sekarang";
+      }
+    }
+
+    // Submit saat tekan Enter
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        const activePanel = document.querySelector(".panel.active").id;
+        if (activePanel === "panel-login") doLogin();
+        else doRegister();
+      }
+    });
+  </script>
+</body>
+
+</html>

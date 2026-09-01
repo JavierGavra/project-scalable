@@ -1,0 +1,173 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: Georgia, serif;
+  background: #f5f0e8;
+}
+
+/* ── Header ── */
+header {
+  background: #2c3e50;
+  color: white;
+  padding: 16px 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+header h1 {
+  font-size: 20px;
+}
+
+.user-info {
+  font-size: 14px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.btn-logout {
+  background: #e74c3c;
+  color: white;
+  border: none;
+  padding: 7px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  font-family: inherit;
+  transition: background 0.15s ease;
+}
+
+.btn-logout:hover {
+  background: #c0392b;
+}
+
+/* ── Main ── */
+.main {
+  max-width: 700px;
+  margin: 32px auto;
+  padding: 0 16px;
+}
+
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.toolbar h2 {
+  color: #2c3e50;
+  font-size: 18px;
+}
+
+.toolbar-right {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.btn-tulis {
+  background: #27ae60;
+  color: white;
+  border: none;
+  padding: 9px 18px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-family: inherit;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  transition: background 0.15s ease;
+}
+
+.btn-tulis:hover {
+  background: #219a52;
+}
+
+.btn-refresh {
+  background: white;
+  border: 1px solid #ddd;
+  padding: 8px 14px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  color: #7f8c8d;
+  font-family: inherit;
+  transition: all 0.15s ease;
+}
+
+.btn-refresh:hover {
+  border-color: #2c3e50;
+  color: #2c3e50;
+}
+
+/* ── Card list ── */
+.card {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  padding: 24px;
+}
+
+.puisi-item {
+  border-bottom: 1px solid #f0f0f0;
+  padding: 14px 0;
+}
+
+.puisi-item:last-child {
+  border-bottom: none;
+}
+
+.puisi-judul {
+  font-weight: bold;
+  color: #2c3e50;
+  margin-bottom: 4px;
+  font-size: 16px;
+}
+
+.puisi-meta {
+  font-size: 12px;
+  color: #95a5a6;
+}
+
+.puisi-isi {
+  font-size: 14px;
+  color: #95a5a6;
+  padding-top: 4px;
+}
+
+.badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 11px;
+  background: #eaf0fb;
+  color: #2980b9;
+  margin-left: 6px;
+}
+
+.empty {
+  text-align: center;
+  color: #bdc3c7;
+  padding: 48px 20px;
+  font-style: italic;
+  line-height: 2;
+}
+
+.loading {
+  text-align: center;
+  color: #7f8c8d;
+  padding: 24px;
+}
+
+@media (max-width: 600px) {
+  .main {
+    margin: 16px auto;
+  }
+}
