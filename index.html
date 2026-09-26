@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="../style/style.css" />
   <title>Aplikasi Puisi — Login</title>
 </head>
 
@@ -61,9 +61,7 @@
 
   <script>
 
-    // (sama-sama di-serve dari server Node app.js) — jadi ?action=login
-    // otomatis relatif ke halaman saat ini, contoh: http://localhost:3000/?action=login
-    const BASE = "server.php";
+    const BASE = "server.js";
 
     function switchTab(tab) {
       document.querySelectorAll(".tab").forEach((t) => t.classList.remove("active"));
@@ -109,7 +107,7 @@
         if (res.ok) {
           showAlert(data.message || "Login berhasil!", "success");
           setTimeout(() => {
-            window.location.href = "dashboard.html";
+            window.location.href = "./dashboard.html";
           }, 800);
         } else {
           showAlert(data.error || "Username atau password salah", "error");
