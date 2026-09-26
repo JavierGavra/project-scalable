@@ -64,7 +64,40 @@
                 <label for="isi">Isi Puisi</label>
                 <textarea id="isi" placeholder="Tuliskan bait puisi Anda di sini..."></textarea>
             </div>
+<div class="form-group">
+    <label for="penggalan">Penggalan Bait untuk Gambar</label>
+    <textarea
+        id="penggalan"
+        placeholder="Masukkan penggalan bait yang akan ditampilkan pada gambar..."
+        rows="4"
+    ></textarea>
+</div>
 
+<div class="form-group">
+    <label for="template">Pilih Template Gambar</label>
+    <select id="template" onchange="updatePreview()">
+        <option value="latar1.jpeg">Template 1</option>
+        <option value="latar2.jpeg">Template 2</option>
+        <option value="latar3.jpeg">Template 3</option>
+        <option value="latar5.jpeg">Template 4</option>
+    </select>
+</div>
+
+<div class="preview-section">
+    <h3>Preview Gambar Puisi</h3>
+
+    <div class="preview-container">
+        <img
+            id="preview-gambar"
+            src="latar1.jpeg"
+            alt="Preview gambar puisi"
+        />
+    </div>
+
+    <p class="preview-info">
+        Preview akan menampilkan judul, penulis, dan penggalan bait.
+    </p>
+</div>
             <div class="form-actions">
                 <a href="dashboard.html" class="btn-batal">Batal</a>
                 <button class="btn-simpan" id="btn-simpan" onclick="doSubmitPuisi()">
@@ -93,6 +126,57 @@
                 window.location.href = "index.html";
             }
         }
+let currentUser = null;
+
+async function loadCurrentUser() {
+    try {
+        const res = await fetch(`${BASE}?action=current_user`, {
+            method: "GET",
+            credentials: "include"
+        });
+
+        const result = await res.json();
+
+        if (!res.ok) {
+            throw new Error(result.error || "Gagal mengambil data user");
+        }
+
+        currentUser = result.data;
+
+        console.log("User login:", currentUser);
+
+        updatePreview();
+    } catch (error) {
+        console.error("Gagal mengambil user:", error);
+    }
+}
+function wrapText(ctx, text, maxWidth) {
+    const words = text.split(/\s+/);
+    const lines = [];
+    let line = "";
+
+    for (const word of words) {
+        const testLine = line
+            ? `${line} ${word}`
+            : word;
+
+        const width = ctx.measureText(testLine).width;
+
+        if (width > maxWidth && line) {
+            lines.push(line);
+            line = word;
+        } else {
+            line = testLine;
+        }
+    }
+
+    if (line) {
+        lines.push(line);
+    }
+
+    return lines;
+}
+
 
         async function doSubmitPuisi() {
             const alertEl = document.getElementById("submit-alert");
@@ -114,7 +198,136 @@
             btn.disabled = true;
             btn.textContent = "Menyimpan...";
 
-            try {
+async function updatePreview() {
+    const judul = document.getElementById("judul").value.trim();
+    const penggalan = document.getElementById("penggalan").value.trim();
+    const template = document.getElementById("template").value;
+    const preview = document.getElementById("preview-gambar");
+
+    const penulis = currentUser
+        ? currentUser.nama
+        : "Penulis";
+
+    const img = new Image();
+
+    img.onload = function () {
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+
+        canvas.width = img.naturalWidth;
+        canvas.height = img.naturalHeight;
+
+        ctx.drawImage(img, 0, 0);
+
+        const W = canvas.width;
+        const H = canvas.height;
+        const centerX = W / 2;
+
+        // =========================
+        // AREA TEKS
+        // =========================
+
+        const padding = W * 0.10;
+        const maxWidth = W - (padding * 2);
+
+        // Kotak transparan tipis agar teks mudah dibaca
+        ctx.fillStyle = "rgba(0, 0, 0, 0.18)";
+        ctx.fillRect(
+            W * 0.06,
+            H * 0.12,
+            W * 0.88,
+            H * 0.72
+        );
+
+        ctx.textAlign = "center";
+        ctx.textBaseline = "top";
+
+        // =========================
+        // JUDUL
+        // =========================
+
+        const titleSize = Math.max(18, Math.min(W * 0.075, 38));
+
+        ctx.font = `bold ${titleSize}px Arial`;
+        ctx.fillStyle = "black";
+
+        const titleLines = wrapText(
+            ctx,
+            judul || "Judul Puisi",
+            maxWidth
+        );
+
+        let y = H * 0.20;
+
+        titleLines.slice(0, 2).forEach(line => {
+            ctx.fillText(line, centerX, y);
+            y += titleSize * 1.15;
+        });
+
+        // =========================
+        // PENULIS
+        // =========================
+
+        const authorSize = Math.max(13, Math.min(W * 0.038, 21));
+
+        ctx.font = `${authorSize}px Arial`;
+
+        y += H * 0.025;
+
+        ctx.fillText(
+            `Oleh: ${penulis}`,
+            centerX,
+            y
+        );
+
+        // =========================
+        // PENGGALAN BAIT
+        // =========================
+
+        const bodySize = Math.max(12, Math.min(W * 0.040, 22));
+
+        ctx.font = `italic ${bodySize}px Arial`;
+
+        y += authorSize * 1.8;
+
+        const bodyLines = wrapText(
+            ctx,
+            penggalan || "Penggalan bait puisi...",
+            maxWidth
+        );
+
+        const lineHeight = bodySize * 1.35;
+
+        bodyLines.slice(0, 5).forEach(line => {
+            ctx.fillText(line, centerX, y);
+            y += lineHeight;
+        });
+
+        // =========================
+        // HASIL PREVIEW
+        // =========================
+
+        preview.src = canvas.toDataURL(
+            "image/jpeg",
+            0.92
+        );
+
+        preview.alt = judul
+            ? `Preview puisi: ${judul}`
+            : "Preview gambar puisi";
+    };
+
+    img.onerror = function () {
+        console.error(
+            "Gagal memuat template:",
+            template
+        );
+
+        preview.src = template;
+    };
+
+    img.src = template;
+}            try {
                 const res = await fetch(`${BASE}?action=submit_puisi`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
@@ -164,6 +377,109 @@
             el.className = `alert ${type}`;
             el.style.display = "block";
         }
+function updatePreview() {
+    const judul = document.getElementById("judul").value.trim();
+    const penggalan = document.getElementById("penggalan").value.trim();
+    const template = document.getElementById("template").value;
+    const preview = document.getElementById("preview-gambar");
+
+    const penulis = currentUser
+        ? currentUser.nama
+        : "Penulis";
+
+    const img = new Image();
+
+    img.onload = function () {
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+
+        canvas.width = img.naturalWidth;
+        canvas.height = img.naturalHeight;
+
+        ctx.drawImage(img, 0, 0);
+
+        const W = canvas.width;
+        const H = canvas.height;
+        const centerX = W / 2;
+
+        const padding = W * 0.10;
+        const maxWidth = W - (padding * 2);
+
+        ctx.textAlign = "center";
+        ctx.textBaseline = "top";
+        ctx.fillStyle = "black";
+
+        // Judul
+const titleSize = Math.max(18, Math.min(W * 0.05, 28));
+        ctx.font = `bold ${titleSize}px Arial`;
+
+        let y = H * 0.18;
+
+        const titleLines = wrapText(
+            ctx,
+            judul || "Judul Puisi",
+            maxWidth
+        );
+
+        titleLines.slice(0, 2).forEach(line => {
+            ctx.fillText(line, centerX, y);
+            y += titleSize * 1.15;
+        });
+
+        // Penulis
+const authorSize = Math.max(11, Math.min(W * 0.025, 16));
+        ctx.font = `${authorSize}px Arial`;
+
+        y += H * 0.02;
+
+        ctx.fillText(
+            `Oleh: ${penulis}`,
+            centerX,
+            y
+        );
+
+        // Penggalan bait
+const bodySize = Math.max(11, Math.min(W * 0.028, 17));
+        ctx.font = `italic ${bodySize}px Arial`;
+
+        y += authorSize * 1.8;
+
+        const bodyLines = wrapText(
+            ctx,
+            penggalan || "Penggalan bait puisi...",
+            maxWidth
+        );
+
+        const lineHeight = bodySize * 1.4;
+
+        bodyLines.slice(0, 5).forEach(line => {
+            ctx.fillText(line, centerX, y);
+            y += lineHeight;
+        });
+
+        preview.src = canvas.toDataURL(
+            "image/jpeg",
+            0.92
+        );
+
+        preview.alt = judul
+            ? `Preview puisi: ${judul}`
+            : "Preview gambar puisi";
+    };
+
+    img.onerror = function () {
+        console.error("Gagal memuat template:", template);
+        preview.src = template;
+    };
+
+    img.src = template;
+}
+loadCurrentUser();
+document.getElementById("judul").addEventListener("input", updatePreview);
+
+document.getElementById("penggalan").addEventListener("input", updatePreview);
+
+document.getElementById("template").addEventListener("change", updatePreview);
     </script>
 </body>
 

@@ -246,3 +246,29 @@ textarea {
     grid-template-columns: 1fr;
   }
 }
+/* === Preview Gambar Puisi === */
+
+.preview-section {
+    width: 100%;
+    margin-top: 24px;
+}
+
+.preview-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+.preview-container img {
+    display: block;
+    width: 100%;
+    max-width: 700px;
+    height: auto;
+    object-fit: contain;
+    border-radius: 12px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+}

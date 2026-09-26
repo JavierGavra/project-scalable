@@ -85,7 +85,34 @@ switch ($action) {
             echo json_encode(['error' => 'Username atau password salah']);
         }
         break;
+case 'current_user':
 
+    if ($method !== 'GET') {
+        send405();
+        break;
+    }
+
+    if (!isset($_SESSION['user_id'])) {
+        http_response_code(401);
+        echo json_encode(['error' => 'Unauthorized']);
+        break;
+    }
+
+    $stmt = $pdo->prepare("SELECT id, nama, username FROM users WHERE id = ?");
+    $stmt->execute([$_SESSION['user_id']]);
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if (!$user) {
+        http_response_code(404);
+        echo json_encode(['error' => 'User tidak ditemukan']);
+        break;
+    }
+
+    echo json_encode([
+        'data' => $user
+    ]);
+
+    break;
     case 'submit_puisi':
         if ($method !== 'POST') {
             send405();
