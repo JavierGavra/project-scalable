@@ -101,7 +101,8 @@
   </div>
 
   <script>
-    const BASE = "server.php";
+    const BASE = "server.js";
+    const IMAGE_GEN_URL = "https://d2m9n6zcu0rcz.cloudfront.net/fungsi";
 
     window.onload = () => {
       document.getElementById("tgl_submit").value = new Date()
@@ -123,7 +124,7 @@
 
     async function loadCurrentUser() {
       try {
-        const res = await fetch(`${BASE}?action=current_user`, {
+        const res = await fetch(`${BASE}?action=me`, {
           method: "GET",
           credentials: "include"
         });
@@ -192,6 +193,9 @@
       btn.textContent = "Menyimpan...";
 
       try {
+        const templateSelect = document.getElementById("template").value;
+        const bgName = templateSelect.replace(/\.[^/.]+$/, "");
+
         const res = await fetch(`${BASE}?action=submit_puisi`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -202,6 +206,7 @@
             kategori: kategori,
             keywords: keyword,
             isi: isi,
+            background: bgName,
           }),
         });
 
@@ -244,99 +249,21 @@
     function updatePreview() {
       const judul = document.getElementById("judul").value.trim();
       const penggalan = document.getElementById("penggalan").value.trim();
-      const template = "assets/" + document.getElementById("template").value;
+      const templateSelect = document.getElementById("template").value;
       const preview = document.getElementById("preview-gambar");
 
-      const penulis = currentUser
-        ? currentUser.nama
-        : "Penulis";
+      // Extract template name without extension
+      const bgName = templateSelect.replace(/\.[^/.]+$/, "");
 
-      const img = new Image();
+      // Use fallback text if empty, to show a meaningful preview
+      const textParam = encodeURIComponent(penggalan || "Penggalan bait puisi...");
 
-      img.onload = function () {
-        const canvas = document.createElement("canvas");
-        const ctx = canvas.getContext("2d");
+      // Set the src to the CDN URL
+      preview.src = `${IMAGE_GEN_URL}?bg=${bgName}&judul=${judul}&bait=${textParam}&penulis=${currentUser.nama}`;
 
-        canvas.width = img.naturalWidth;
-        canvas.height = img.naturalHeight;
-
-        ctx.drawImage(img, 0, 0);
-
-        const W = canvas.width;
-        const H = canvas.height;
-        const centerX = W / 2;
-
-        const padding = W * 0.10;
-        const maxWidth = W - (padding * 2);
-
-        ctx.textAlign = "center";
-        ctx.textBaseline = "top";
-        ctx.fillStyle = "black";
-
-        // Judul
-        const titleSize = Math.max(18, Math.min(W * 0.05, 28));
-        ctx.font = `bold ${titleSize}px Arial`;
-
-        let y = H * 0.18;
-
-        const titleLines = wrapText(
-          ctx,
-          judul || "Judul Puisi",
-          maxWidth
-        );
-
-        titleLines.slice(0, 2).forEach(line => {
-          ctx.fillText(line, centerX, y);
-          y += titleSize * 1.15;
-        });
-
-        // Penulis
-        const authorSize = Math.max(11, Math.min(W * 0.025, 16));
-        ctx.font = `${authorSize}px Arial`;
-
-        y += H * 0.02;
-
-        ctx.fillText(
-          `Oleh: ${penulis}`,
-          centerX,
-          y
-        );
-
-        // Penggalan bait
-        const bodySize = Math.max(11, Math.min(W * 0.028, 17));
-        ctx.font = `italic ${bodySize}px Arial`;
-
-        y += authorSize * 1.8;
-
-        const bodyLines = wrapText(
-          ctx,
-          penggalan || "Penggalan bait puisi...",
-          maxWidth
-        );
-
-        const lineHeight = bodySize * 1.4;
-
-        bodyLines.slice(0, 5).forEach(line => {
-          ctx.fillText(line, centerX, y);
-          y += lineHeight;
-        });
-
-        preview.src = canvas.toDataURL(
-          "image/jpeg",
-          0.92
-        );
-
-        preview.alt = judul
-          ? `Preview puisi: ${judul}`
-          : "Preview gambar puisi";
-      };
-
-      img.onerror = function () {
-        console.error("Gagal memuat template:", template);
-        preview.src = template;
-      };
-
-      img.src = template;
+      preview.alt = judul
+        ? `Preview puisi: ${judul}`
+        : "Preview gambar puisi";
     }
     loadCurrentUser();
     document.getElementById("judul").addEventListener("input", updatePreview);

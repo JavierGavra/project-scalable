@@ -63,6 +63,7 @@ db.exec(`CREATE TABLE IF NOT EXISTS puisi (
     isi TEXT,
     kategori TEXT,
     keyword TEXT,
+    background TEXT,
     FOREIGN KEY(user_id) REFERENCES users(id)
 )`);
 
@@ -205,6 +206,25 @@ const server = http.createServer(async (req, res) => {
             break;
         }
 
+        case 'me': {
+            if (method !== 'GET') return send405(res);
+
+            const session = getSession(req);
+            if (!session) {
+                return sendJSON(res, 401, { error: 'Unauthorized' });
+            }
+
+            const stmt = db.prepare('SELECT id, username, nama, no_id FROM users WHERE id = ?');
+            const user = stmt.get(session.data.user_id);
+
+            if (!user) {
+                return sendJSON(res, 404, { error: 'User tidak ditemukan' });
+            }
+
+            sendJSON(res, 200, { data: user });
+            break;
+        }
+
         case 'submit_puisi': {
             if (method !== 'POST') return send405(res);
 
@@ -218,12 +238,13 @@ const server = http.createServer(async (req, res) => {
             const tgl_submit = input.tgl_submit || new Date().toISOString().slice(0, 10);
             const kategori = input.kategori || '';
             const keywords = input.keywords || '';
+            const background = input.background || '';
             const user_id = session.data.user_id;
 
             const stmt = db.prepare(
-                'INSERT INTO puisi (user_id, judul, tgl_submit, isi, kategori, keyword) VALUES (?, ?, ?, ?, ?, ?)'
+                'INSERT INTO puisi (user_id, judul, tgl_submit, isi, kategori, keyword, background) VALUES (?, ?, ?, ?, ?, ?, ?)'
             );
-            stmt.run(user_id, judul, tgl_submit, isi, kategori, keywords);
+            stmt.run(user_id, judul, tgl_submit, isi, kategori, keywords, background);
             sendJSON(res, 200, { message: 'Puisi berhasil disubmit' });
             break;
         }
