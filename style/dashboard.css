@@ -48,7 +48,7 @@ header h1 {
 
 /* ── Main ── */
 .main {
-    max-width: 700px;
+    max-width: 760px;
     margin: 32px auto;
     padding: 0 16px;
 }
@@ -115,41 +115,41 @@ header h1 {
     padding: 24px;
 }
 
+#puisi-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
 .puisi-item {
-    border-bottom: 1px solid #f0f0f0;
-    padding: 14px 0;
+    border: 1px solid #e8e2d5;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #ffffff;
+    box-shadow: 0 2px 8px rgba(44, 62, 80, 0.06);
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+    display: flex;
+    cursor: pointer;
 }
 
-.puisi-item:last-child {
-    border-bottom: none;
+.puisi-item:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 22px rgba(44, 62, 80, 0.12);
+    border-color: #c5bba9;
 }
 
-.puisi-judul {
-    font-weight: bold;
-    color: #2c3e50;
-    margin-bottom: 4px;
-    font-size: 16px;
+.puisi-image {
+    width: 100%;
+    height: auto;
+    display: block;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    background: #eee8dc;
+    transition: transform 0.3s ease;
 }
 
-.puisi-meta {
-    font-size: 12px;
-    color: #95a5a6;
-}
-
-.puisi-isi {
-    font-size: 14px;
-    color: #95a5a6;
-    padding-top: 4px;
-}
-
-.badge {
-    display: inline-block;
-    padding: 2px 8px;
-    border-radius: 12px;
-    font-size: 11px;
-    background: #eaf0fb;
-    color: #2980b9;
-    margin-left: 6px;
+.puisi-item:hover .puisi-image {
+    transform: scale(1.02);
 }
 
 .empty {
@@ -158,16 +158,27 @@ header h1 {
     padding: 48px 20px;
     font-style: italic;
     line-height: 2;
+    grid-column: 1 / -1;
 }
 
 .loading {
     text-align: center;
     color: #7f8c8d;
     padding: 24px;
+    grid-column: 1 / -1;
 }
 
 @media (max-width: 600px) {
     .main {
         margin: 16px auto;
+    }
+
+    .card {
+        padding: 16px;
+    }
+
+    #puisi-list {
+        grid-template-columns: 1fr;
+        gap: 16px;
     }
 }
