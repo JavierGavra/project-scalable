@@ -1,201 +1,113 @@
 <!doctype html>
-
 <html lang="id">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="../style/style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="style/tambah_puisi.css" />
   <title>Tulis Puisi — Puisi Nusantara</title>
 </head>
-<body class="dashboard-body">
 
-  <div class="app-layout">
-    <aside class="sidebar">
-      <div>
-        <div class="sidebar-brand">
-          <div class="brand-icon">✒</div>
-          <div class="brand-name">Puisi Nusantara</div>
-        </div>
-
-```
-    <nav class="sidebar-nav" aria-label="Navigasi utama">
-      <a href="dashboard.html" class="nav-item">
-        <span aria-hidden="true">⌂</span>
-        <span>Dashboard</span>
-      </a>
-
-      <a href="tambah_puisi.html" class="nav-item active">
-        <span aria-hidden="true">✎</span>
-        <span>Tulis Puisi</span>
-      </a>
-    </nav>
-  </div>
-
-  <div class="sidebar-footer">
-    <button type="button" class="btn-logout" onclick="doLogout()">
-      <span aria-hidden="true">↪</span>
-      <span>Keluar</span>
-    </button>
-  </div>
-</aside>
-
-<div class="main-wrapper">
-  <header class="top-navbar">
-    <h1 class="page-title">Tulis Puisi</h1>
-    <div class="welcome-badge">Karya Baru</div>
+<body>
+  <!-- Header -->
+  <header>
+    <h1><a href="dashboard.html">My Poems</a></h1>
+    <div class="user-info">
+      <button class="btn-logout" onclick="doLogout()">Keluar</button>
+    </div>
   </header>
 
-  <main class="main-content">
-    <nav class="nav-bar" aria-label="Navigasi halaman">
-      <a href="dashboard.html" class="btn-back">
-        <span aria-hidden="true">←</span>
-        Kembali ke Dashboard
-      </a>
-    </nav>
+  <!-- Main Content -->
+  <div class="main">
+    <div class="nav-bar">
+      <a href="dashboard.html" class="btn-back">← Kembali ke Dashboard</a>
+    </div>
 
-    <section class="card" aria-labelledby="form-title">
-      <header class="card-header">
-        <h2 id="form-title">Tulis Puisi Baru</h2>
+    <div class="card">
+      <div class="card-header">
+        <h2>Tulis Puisi Baru</h2>
         <p>Tuangkan bait-bait karya sastra dan inspirasi Anda di sini.</p>
-      </header>
+      </div>
 
-      <div id="submit-alert" class="alert" role="alert"></div>
+      <div id="submit-alert" class="alert"></div>
 
       <div class="form-group">
         <label for="judul">Judul Puisi</label>
-        <div class="input-wrapper">
-          <span class="input-icon" aria-hidden="true">✎</span>
-          <input
-            type="text"
-            id="judul"
-            placeholder="Tulis judul puisi Anda..."
-            autofocus
-          >
-        </div>
+        <input type="text" id="judul" placeholder="Tulis judul puisi Anda..." autofocus />
       </div>
 
       <div class="form-row">
         <div class="form-group">
           <label for="tgl_submit">Tanggal Submit</label>
-          <div class="input-wrapper">
-            <span class="input-icon" aria-hidden="true">📅</span>
-            <input type="date" id="tgl_submit">
-          </div>
+          <input type="date" id="tgl_submit" />
         </div>
-
         <div class="form-group">
           <label for="kategori">Kategori</label>
-          <div class="input-wrapper">
-            <span class="input-icon" aria-hidden="true">☷</span>
-            <select id="kategori">
-              <option value="">-- Pilih Kategori --</option>
-              <option value="Alam">Alam</option>
-              <option value="Cinta">Cinta</option>
-              <option value="Patriotisme">Patriotisme</option>
-              <option value="Religi">Religi</option>
-              <option value="Sosial">Sosial</option>
-              <option value="Lainnya">Lainnya</option>
-            </select>
-          </div>
+          <select id="kategori">
+            <option value="">-- Pilih Kategori --</option>
+            <option value="Alam">Alam</option>
+            <option value="Cinta">Cinta</option>
+            <option value="Patriotisme">Patriotisme</option>
+            <option value="Religi">Religi</option>
+            <option value="Sosial">Sosial</option>
+            <option value="Lainnya">Lainnya</option>
+          </select>
         </div>
       </div>
 
       <div class="form-group">
         <label for="keyword">Kata Kunci (pisahkan dengan koma)</label>
-        <div class="input-wrapper">
-          <span class="input-icon" aria-hidden="true">#</span>
-          <input
-            type="text"
-            id="keyword"
-            placeholder="contoh: senja, rindu, kenangan"
-          >
-        </div>
+        <input type="text" id="keyword" placeholder="contoh: senja, rindu, kenangan" />
       </div>
 
       <div class="form-group">
         <label for="isi">Isi Puisi</label>
-        <textarea
-          id="isi"
-          placeholder="Tuliskan bait puisi Anda di sini..."
-        ></textarea>
+        <textarea id="isi" placeholder="Tuliskan bait puisi Anda di sini..."></textarea>
       </div>
-
       <div class="form-group">
         <label for="penggalan">Penggalan Bait untuk Gambar</label>
-        <textarea
-          id="penggalan"
-          rows="4"
-          placeholder="Masukkan penggalan bait yang akan ditampilkan pada gambar..."
-        ></textarea>
+        <textarea id="penggalan" placeholder="Masukkan penggalan bait yang akan ditampilkan pada gambar..."
+          rows="4"></textarea>
       </div>
 
       <div class="form-group">
         <label for="template">Pilih Template Gambar</label>
-        <div class="input-wrapper"> 
-          <span class="input-icon" aria-hidden="true">▣</span>
-          <select id="template">
-            <option value="">-- Pilih Template --</option>
-            <option value="../assets/latar1.jpeg">Template 1</option>
-            <option value="../assets/latar2.jpeg">Template 2</option>
-            <option value="../assets/latar3.jpeg">Template 3</option>
-            <option value="../assets/latar5.jpeg">Template 4</option>
-          </select>
-        </div>
+        <select id="template" onchange="updatePreview()">
+          <option value="latar1.jpeg">Template 1</option>
+          <option value="latar2.jpeg">Template 2</option>
+          <option value="latar3.jpeg">Template 3</option>
+          <option value="latar5.jpeg">Template 4</option>
+        </select>
       </div>
 
-      <section class="preview-section" aria-labelledby="preview-title">
-        <h3 id="preview-title" class="preview-title">
-          <span aria-hidden="true">▣</span>
-          Preview Gambar Puisi
-        </h3>
+      <div class="preview-section">
+        <h3>Preview Gambar Puisi</h3>
 
         <div class="preview-container">
-          <img
-            id="preview-gambar"
-            src="latar1.jpeg"
-            alt="Preview gambar puisi"
-          >
+          <img id="preview-gambar" src="latar1.jpeg" alt="Preview gambar puisi" />
         </div>
 
         <p class="preview-info">
           Preview akan menampilkan judul, penulis, dan penggalan bait.
         </p>
-      </section>
-
+      </div>
       <div class="form-actions">
-        <a href="dashboard.html" class="btn-batal">
-          <span aria-hidden="true">×</span>
-          Batal
-        </a>
-
-        <button
-          type="button"
-          class="btn-simpan"
-          id="btn-simpan"
-          onclick="doSubmitPuisi()"
-        >
-          <span aria-hidden="true">✓</span>
+        <a href="dashboard.html" class="btn-batal">Batal</a>
+        <button class="btn-simpan" id="btn-simpan" onclick="doSubmitPuisi()">
           Simpan Puisi
         </button>
       </div>
-    </section>
-  </main>
-</div>
-```
-
+    </div>
   </div>
 
   <script>
-    const BASE = "server.js";
-    let currentUser = null;
+    const BASE = "server.php";
 
-    window.addEventListener("load", () => {
+    window.onload = () => {
       document.getElementById("tgl_submit").value = new Date()
         .toISOString()
         .split("T")[0];
-
-      loadCurrentUser();
-    });
+    };
 
     async function doLogout() {
       try {
@@ -207,12 +119,13 @@
         window.location.href = "index.html";
       }
     }
+    let currentUser = null;
 
     async function loadCurrentUser() {
       try {
         const res = await fetch(`${BASE}?action=current_user`, {
           method: "GET",
-          credentials: "include",
+          credentials: "include"
         });
 
         const result = await res.json();
@@ -222,19 +135,24 @@
         }
 
         currentUser = result.data;
+
+        console.log("User login:", currentUser);
+
         updatePreview();
       } catch (error) {
         console.error("Gagal mengambil user:", error);
       }
     }
-
     function wrapText(ctx, text, maxWidth) {
       const words = text.split(/\s+/);
       const lines = [];
       let line = "";
 
       for (const word of words) {
-        const testLine = line ? `${line} ${word}` : word;
+        const testLine = line
+          ? `${line} ${word}`
+          : word;
+
         const width = ctx.measureText(testLine).width;
 
         if (width > maxWidth && line) {
@@ -251,6 +169,7 @@
 
       return lines;
     }
+
 
     async function doSubmitPuisi() {
       const alertEl = document.getElementById("submit-alert");
@@ -275,30 +194,22 @@
       try {
         const res = await fetch(`${BASE}?action=submit_puisi`, {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
           credentials: "include",
           body: JSON.stringify({
-            judul,
-            tgl_submit,
-            kategori,
+            judul: judul,
+            tgl_submit: tgl_submit,
+            kategori: kategori,
             keywords: keyword,
-            isi,
+            isi: isi,
           }),
         });
 
         if (res.status === 401) {
-          showAlert(
-            alertEl,
-            "Sesi habis, silakan login kembali",
-            "error"
-          );
-
+          showAlert(alertEl, "Sesi habis, silakan login kembali", "error");
           setTimeout(() => {
             window.location.href = "index.html";
           }, 1200);
-
           return;
         }
 
@@ -310,36 +221,30 @@
             (data.message || "Puisi berhasil disimpan!") + " Mengalihkan...",
             "success"
           );
-
           setTimeout(() => {
             window.location.href = "dashboard.html";
           }, 1000);
         } else {
-          showAlert(
-            alertEl,
-            data.error || "Gagal menyimpan puisi",
-            "error"
-          );
-
+          showAlert(alertEl, data.error || "Gagal menyimpan puisi", "error");
           btn.disabled = false;
           btn.textContent = "Simpan Puisi";
         }
       } catch {
-        showAlert(
-          alertEl,
-          "Gagal terhubung ke server",
-          "error"
-        );
-
+        showAlert(alertEl, "Gagal terhubung ke server", "error");
         btn.disabled = false;
         btn.textContent = "Simpan Puisi";
       }
     }
 
+    function showAlert(el, msg, type) {
+      el.textContent = msg;
+      el.className = `alert ${type}`;
+      el.style.display = "block";
+    }
     function updatePreview() {
       const judul = document.getElementById("judul").value.trim();
       const penggalan = document.getElementById("penggalan").value.trim();
-      const template = document.getElementById("template").value;
+      const template = "assets/" + document.getElementById("template").value;
       const preview = document.getElementById("preview-gambar");
 
       const penulis = currentUser
@@ -360,6 +265,7 @@
         const W = canvas.width;
         const H = canvas.height;
         const centerX = W / 2;
+
         const padding = W * 0.10;
         const maxWidth = W - (padding * 2);
 
@@ -367,6 +273,7 @@
         ctx.textBaseline = "top";
         ctx.fillStyle = "black";
 
+        // Judul
         const titleSize = Math.max(18, Math.min(W * 0.05, 28));
         ctx.font = `bold ${titleSize}px Arial`;
 
@@ -383,6 +290,7 @@
           y += titleSize * 1.15;
         });
 
+        // Penulis
         const authorSize = Math.max(11, Math.min(W * 0.025, 16));
         ctx.font = `${authorSize}px Arial`;
 
@@ -394,6 +302,7 @@
           y
         );
 
+        // Penggalan bait
         const bodySize = Math.max(11, Math.min(W * 0.028, 17));
         ctx.font = `italic ${bodySize}px Arial`;
 
@@ -429,17 +338,13 @@
 
       img.src = template;
     }
-
-    function showAlert(el, msg, type) {
-      el.textContent = msg;
-      el.className = `alert ${type}`;
-      el.style.display = "flex";
-    }
-
+    loadCurrentUser();
     document.getElementById("judul").addEventListener("input", updatePreview);
+
     document.getElementById("penggalan").addEventListener("input", updatePreview);
+
     document.getElementById("template").addEventListener("change", updatePreview);
   </script>
-
 </body>
+
 </html>

@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="../style/style.css" />
+  <link rel="stylesheet" href="style/style.css" />
   <title>Aplikasi Puisi — Login</title>
 </head>
 
@@ -107,7 +107,7 @@
         if (res.ok) {
           showAlert(data.message || "Login berhasil!", "success");
           setTimeout(() => {
-            window.location.href = "./dashboard.html";
+            window.location.href = "dashboard.html";
           }, 800);
         } else {
           showAlert(data.error || "Username atau password salah", "error");
@@ -175,5 +175,7 @@
     });
   </script>
 </body>
+
+</html>
 
 </html>

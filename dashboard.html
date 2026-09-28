@@ -1,85 +1,45 @@
 <!doctype html>
-
 <html lang="id">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="../style/style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="style/dashboard.css" />
   <title>Dashboard — Puisi Nusantara</title>
 </head>
-<body class="dashboard-body">
 
-  <div class="app-layout">
-    <aside class="sidebar">
-      <div>
-        <div class="sidebar-brand">
-          <div class="brand-icon">✒</div>
-          <div class="brand-name">Puisi Nusantara</div>
-        </div>
-
-```
-    <nav class="sidebar-nav" aria-label="Navigasi utama">
-      <a href="dashboard.html" class="nav-item active">
-        <span aria-hidden="true">⌂</span>
-        <span>Dashboard</span>
-      </a>
-
-      <a href="tambah_puisi.html" class="nav-item">
-        <span aria-hidden="true">✎</span>
-        <span>Tulis Puisi</span>
-      </a>
-    </nav>
-  </div>
-
-  <div class="sidebar-footer">
-    <button type="button" class="btn-logout" onclick="doLogout()">
-      <span aria-hidden="true">↪</span>
-      <span>Keluar</span>
-    </button>
-  </div>
-</aside>
-
-<div class="main-wrapper">
-  <header class="top-navbar">
-    <h1 class="page-title">My Poems</h1>
-    <div class="welcome-badge">Koleksi Puisiku</div>
+<body>
+  <!-- Header -->
+  <header>
+    <h1>My Poems</h1>
+    <div class="user-info">
+      <button class="btn-logout" onclick="doLogout()">Keluar</button>
+    </div>
   </header>
 
-  <main class="main-content">
-    <section class="toolbar" aria-labelledby="collection-title">
-      <div>
-        <h2 id="collection-title">Koleksi Puisiku</h2>
-        <p class="subtitle">Semua puisi yang telah kamu tulis</p>
-      </div>
-
+  <!-- Main Content -->
+  <div class="main">
+    <div class="toolbar">
+      <h2>Koleksi Puisiku</h2>
       <div class="toolbar-right">
-        <button type="button" class="btn-refresh" onclick="loadDaftarPuisi()">
-          <span aria-hidden="true">↻</span>
-          Refresh
-        </button>
-
-        <a href="tambah_puisi.html" class="btn-tulis">
-          <span aria-hidden="true">✎</span>
-          Tulis Puisi
-        </a>
+        <button class="btn-refresh" onclick="loadDaftarPuisi()">↻ Refresh</button>
+        <a href="tambah_puisi.html" class="btn-tulis">Tulis Puisi</a>
       </div>
-    </section>
+    </div>
 
-    <section class="card" aria-label="Daftar puisi">
+    <div class="card">
       <div id="puisi-list">
         <div class="loading">Memuat puisi...</div>
       </div>
-    </section>
-  </main>
-</div>
-```
-
+    </div>
   </div>
 
   <script>
-    const BASE = "server.js";
+    const BASE = "server.php";
 
-    window.addEventListener("load", loadDaftarPuisi);
+    window.onload = () => {
+      loadDaftarPuisi();
+    };
 
     async function doLogout() {
       try {
@@ -112,43 +72,28 @@
         if (!data.data || data.data.length === 0) {
           listEl.innerHTML = `
             <div class="empty">
-              <div class="empty-icon" aria-hidden="true">✎</div>
-              Belum ada puisi tersimpan.
-              <br>
-              <a href="tambah_puisi.html" class="empty-link">Tulis Puisi</a>
-              untuk mulai menulis!
-            </div>
-          `;
+              Belum ada puisi tersimpan.<br>
+              Klik <a href="tambah_puisi.html" style="color:#27ae60; font-weight:bold; text-decoration:none;">Tulis Puisi</a> untuk mulai menulis!
+            </div>`;
           return;
         }
 
         listEl.innerHTML = data.data
           .map(
             (p) => `
-              <article class="puisi-item">
-                <div class="puisi-header">
-                  <h3 class="puisi-judul">${escapeHtml(p.judul)}</h3>
-                  <span class="badge">${escapeHtml(p.kategori)}</span>
-                </div>
-
-                <div class="puisi-meta">
-                  <span aria-hidden="true">📅</span>
-                  <time datetime="${escapeHtml(p.tgl_submit)}">
-                    ${formatDate(p.tgl_submit)}
-                  </time>
-                </div>
-
-                <div class="puisi-isi">${escapeHtml(p.isi)}</div>
-              </article>
-            `,
+          <div class="puisi-item">
+            <div class="puisi-judul">${escapeHtml(p.judul)}</div>
+            <div class="puisi-meta">
+              📅 ${formatDate(p.tgl_submit)}
+              <span class="badge">${escapeHtml(p.kategori)}</span>
+              </div>
+            <div class="puisi-isi">${escapeHtml(p.isi)}</div>
+          </div>
+        `,
           )
           .join("");
       } catch {
-        listEl.innerHTML = `
-          <div class="empty">
-            Gagal memuat puisi.
-          </div>
-        `;
+        listEl.innerHTML = '<div class="empty">Gagal memuat puisi.</div>';
       }
     }
 
@@ -162,13 +107,9 @@
 
     function escapeHtml(s) {
       if (!s) return "";
-
-      return s
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;");
+      return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
     }
   </script>
-
 </body>
+
 </html>
