@@ -36,7 +36,7 @@
 
   <script>
     const BASE = "server.js";
-    const IMAGE_GEN_URL = "https://d2m9n6zcu0rcz.cloudfront.net/fungsi";
+    // const IMAGE_GEN_URL = "https://d6sqrxfc8ccan.cloudfront.net";
     let currentUser = null;
 
     window.onload = async () => {
@@ -102,8 +102,8 @@
               const bgName = p.background || "latar1";
               const textParam = encodeURIComponent(p.isi || "");
               const penulis = currentUser ? currentUser.nama : "Penulis";
-              const imgSrc = `${IMAGE_GEN_URL}?bg=${bgName}&judul=${encodeURIComponent(p.judul)}&bait=${textParam}&penulis=${encodeURIComponent(penulis)}`;
-              
+              const imgSrc = `/fungsi?bg=${bgName}&judul=${encodeURIComponent(p.judul)}&bait=${textParam}&penulis=${encodeURIComponent(penulis)}`;
+
               return `
           <div class="puisi-item" title="${escapeHtml(p.judul)}">
             <img class="puisi-image" src="${imgSrc}" alt="${escapeHtml(p.judul)}" onerror="this.src='assets/${bgName}.jpeg'" />

@@ -102,7 +102,7 @@
 
   <script>
     const BASE = "server.js";
-    const IMAGE_GEN_URL = "https://d2m9n6zcu0rcz.cloudfront.net/fungsi";
+    // const IMAGE_GEN_URL = "https://d6sqrxfc8ccan.cloudfront.net";
 
     window.onload = () => {
       document.getElementById("tgl_submit").value = new Date()
@@ -259,7 +259,7 @@
       const textParam = encodeURIComponent(penggalan || "Penggalan bait puisi...");
 
       // Set the src to the CDN URL
-      preview.src = `${IMAGE_GEN_URL}?bg=${bgName}&judul=${judul}&bait=${textParam}&penulis=${currentUser.nama}`;
+      preview.src = `/fungsi?bg=${bgName}&judul=${judul}&bait=${textParam}&penulis=${currentUser.nama}`;
 
       preview.alt = judul
         ? `Preview puisi: ${judul}`
